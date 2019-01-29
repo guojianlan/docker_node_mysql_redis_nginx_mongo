@@ -1,0 +1,73 @@
+version: "3"
+services:
+  mission:
+    container_name: ls-node-mission
+    build:
+      context: ${NODE_BASE_DIR}/mission
+      args: 
+        NODE_IMAGE: ${NODE_VERSION}
+        NODE_WORK_DIR: ${NODE_WORK_DIR}
+    working_dir: ${NODE_WORK_DIR}/mission
+    environment:
+      - NODE_ENV=${NODE_ENV}
+    volumes:
+      - ./${NODE_BASE_DIR}/mission/src/:${NODE_WORK_DIR}/mission/src/:ro
+      - ./${NODE_BASE_DIR}/mission/config/:${NODE_WORK_DIR}/mission/config/:ro
+    depends_on: 
+      - mysql
+      - mongo
+      - redis4
+    restart: always
+    networks:
+      - default
+    command: ['sh','start.sh','${NODE_ENV}']
+  redis4:
+    container_name: ls-node-env-redis4
+    image: redis:${REDIS_VERSION}
+    volumes:
+      - ${REDIS_BASE_DIR}/data:/data:rw
+    restart: always
+    ports:
+      - 6379:6379
+    networks:
+      - default
+  mongo:
+    container_name: mongo
+    image: mongo:${MONGO_VERSION}
+    volumes:
+      - db:/data/db
+    ports: 
+      - 27017:27017
+    restart: always
+    networks: 
+      - default
+  mysql:
+    container_name: mysql
+    image: mysql:${MYSQL_VERSION}
+    ports:
+      - '3306:3306'
+    volumes: 
+      - ./mysql/data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=users
+      - MYSQL_USER=users_service
+      - MYSQL_PASSWORD=12345678
+    restart: always
+    networks: 
+      - default
+  nginx:
+    image: nginx:${NGINX_VERSION}
+    volumes:
+      - ${NGINX_BASE_DIR}/etc/conf.d/:/etc/nginx/conf.d/:ro
+      - ${NGINX_BASE_DIR}/etc/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ${NGINX_BASE_DIR}/log:/var/log/nginx/:rw
+    ports:
+      - 80:80
+    restart: always
+    depends_on: 
+      - mission
+networks:
+  default:
+volumes:
+  db:

@@ -1,0 +1,23 @@
+{
+  "name": "node8",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon -L src/index.js "
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@likeshare/ms-core": "git+ssh://git@lsgl.likeshare-tech.com:npm/ms-core.git#v1.0.0",
+    "@likeshare/ms-growth": "git+ssh://git@lsgl.likeshare-tech.com:npm/ms-growth.git#v1.0.2",
+    "bluebird": "3.5.2",
+    "config": "3.0.1",
+    "express": "4.16.4",
+    "lodash": "4.17.11",
+    "mongoose": "5.4.6",
+    "mysql": "2.16.0",
+    "nodemon": "1.18.9",
+    "redis": "2.8.0"
+  }
+}
